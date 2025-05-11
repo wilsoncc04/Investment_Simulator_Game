@@ -1,0 +1,11 @@
+/* App.css */
+
+/* Center the entire grid and add some padding */
+.App {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
+  gap: 20px; /* Space between grid items */
+  padding: 20px;
+  max-width: 1200px; /* Optional: Limit max width for large screens */
+  margin: 0 auto; /* Center the grid horizontally */
+}

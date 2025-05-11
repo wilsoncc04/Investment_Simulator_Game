@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "websitepw",
+    "database": "investmentgame",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "websitepw",
+    "database": "investmentgame",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "websitepw",
+    "database": "investmentgame",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
