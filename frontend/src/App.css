@@ -1,11 +1,58 @@
-/* App.css */
-
-/* Center the entire grid and add some padding */
+/* Center the entire app and ensure full viewport width */
 .App {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
-  gap: 20px; /* Space between grid items */
-  padding: 20px;
-  max-width: 1200px; /* Optional: Limit max width for large screens */
-  margin: 0 auto; /* Center the grid horizontally */
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f7fafc; /* Light gray background for a clean look */
+}
+
+/* Style the navbar with a modern look */
+.navbar {
+  width: 100%;
+  height: 80px;
+  background-color: #1a202c; /* Dark navy background for contrast */
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Spread out the links */
+  padding: 0 2rem; /* Add padding for spacing from edges */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Style the navigation links */
+.navbar a {
+  color: #ffffff; /* White text for contrast */
+  font-family: 'Inter', Arial, Helvetica, sans-serif; /* Modern font */
+  font-size: 1.1rem;
+  text-decoration: none; /* Remove underline */
+  padding: 0.5rem 2rem; /* Add padding for clickable area */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Specific positioning for links */
+.navbar a:first-child {
+  margin-right: auto; /* Push Home to the left */
+}
+
+.navbar a:nth-child(2) {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Center Transaction Record */
+}
+
+.navbar a:last-child {
+  margin-left: auto; /* Push Login to the right */
+}
+
+/* Hover effects for links */
+.navbar a:hover {
+  color: #63b3ed; /* Light blue on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+  border-radius: 4px; /* Rounded corners for hover effect */
+}
+
+/* Ensure content below navbar has spacing */
+.App > *:not(.navbar) {
+  margin-top: 2rem; /* Add space between navbar and content */
 }

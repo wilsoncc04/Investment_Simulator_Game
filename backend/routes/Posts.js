@@ -68,4 +68,9 @@ router.post("/transaction", async (req, res) => {
   }
 });
 
+//not finished - get fruit price trend
+router.get("/fruitrecord/:fruitname", async (req,res)=>{
+  const FruitPriceRecord = await db; 
+}) 
+
 module.exports = router;

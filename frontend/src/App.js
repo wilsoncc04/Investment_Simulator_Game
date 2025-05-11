@@ -1,35 +1,25 @@
 import "./App.css";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Card from "react-bootstrap/Card";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./pages/Home";
+import TRecord from "./pages/TransactionRecord";
+import Login from "./pages/login";
 
 function App() {
-  const [listOfPosts, setListOfPosts] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:3001/posts/fruitdata").then((response) => {
-      setListOfPosts(response.data);
-    });
-  }, []);
   return (
     <div className="App">
-      {listOfPosts.map((value, key) => {
-        return (
-          <Card>
-            <Card.Body>
-              <Card.Title>{value.fruitname}</Card.Title>
-              <Card.Text>
-                <ul>
-                  <li>${value.initialprice}</li>
-                  <li>${value.currentprice}</li>
-                  <li>Risk: {value.RISK}</li>
-                </ul>
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        );
-      })}
+      <Router>
+        <div className="navbar">
+        <Link to="/"> Home Page</Link>
+        <Link to="/transactionrecord">Transaction Record</Link>
+        <Link to="/login">Login</Link> 
+        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/transactionrecord" element={<TRecord />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
