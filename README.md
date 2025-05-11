@@ -35,9 +35,3 @@ To start the server, run the following command:
 ```
 node src/server.js
 ```
-
-The server will start on the specified port, and you can access the application in your web browser.
-
-## Contributing
-
-Feel free to submit issues or pull requests for improvements and bug fixes.
