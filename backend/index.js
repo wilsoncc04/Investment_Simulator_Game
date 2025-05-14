@@ -11,6 +11,8 @@ const { initializeData,syncDatabase } = require("./models/data"); // initialize
 // Routers
 const postRouter = require("./routes/Posts");
 app.use("/posts", postRouter);
+const proceed = require("./route/Proceed.js");
+app.use("/proceed",proceed);
 
 db.sequelize.sync().then(async () => {
   try {
