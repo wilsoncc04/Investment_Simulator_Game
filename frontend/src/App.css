@@ -5,7 +5,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f7fafc; /* Light gray background for a clean look */
+  background-color: #66c1fd; /* Light gray background for a clean look */
+}
+
+/* Container for Home and selected fruits */
+.Home {
+  display:flex;
+  width: 99%;
+  max-width: 100%;
+  flex-direction: row; /* Ensures side-by-side layout */
+  justify-content: space-between; /* Pushes content to the sides */
+  align-items: flex-start; /* Aligns items to the top */
 }
 
 /* Style the navbar with a modern look */
@@ -55,4 +65,158 @@
 /* Ensure content below navbar has spacing */
 .App > *:not(.navbar) {
   margin-top: 2rem; /* Add space between navbar and content */
+}
+
+/* Home container for 3x3 grid */
+.fruit-container{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 78%; /* Take up left side of the container */
+  box-sizing: border-box;
+}
+
+/* Selected fruits container */
+.selected-fruits {
+  width: 20%; /* Take up right side of the container */
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+/* Selected fruits title */
+.selected-fruits-title {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+/* Selected fruits list */
+.selected-fruits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+/* Selected fruit item */
+.selected-fruit-item {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* No selection message */
+.no-selection {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  color: #4a5568;
+  margin: 0;
+}
+
+/* Individual fruit card */
+.fruit-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Ensure cards fill their grid cell */
+  box-sizing: border-box;
+}
+
+.fruit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15);
+}
+
+/* Fruit image */
+.fruit-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Card body */
+.fruit-card-body {
+  padding: 1rem;
+  text-align: left;
+}
+
+/* Fruit title */
+.fruit-title {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+/* Fruit details container */
+.fruit-details {
+  margin: 0;
+}
+
+/* Fruit details list */
+.fruit-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.fruit-details-list li {
+  margin: 0.5rem 0;
+}
+
+/* Counter container for buttons and count display */
+.counter-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Style for the count display */
+.counter-display {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #2d3748;
+  min-width: 2rem;
+  text-align: center;
+}
+
+/* Style for the + and - buttons */
+.addorMinusbtn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .Home {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .Home {
+    grid-template-columns: 1fr;
+  }
 }
