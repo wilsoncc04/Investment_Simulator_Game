@@ -33,5 +33,5 @@ To set up the project, follow these steps:
 
 To start the server, run the following command:
 ```
-node src/server.js
+npm start
 ```
