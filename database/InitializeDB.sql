@@ -11,9 +11,9 @@ CREATE TABLE user (
 );
 CREATE TABLE transactionRecord (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    userid VARCHAR(20) NOT NULL,
     fruitname VARCHAR(20) NOT NULL,
-    amount DECIMAL(10, 2),
+    amount DECIMAL(3),
+    price DECIMAL(5, 2) NOT NULL,
     DateofTsc INT,
     FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (fruitname) REFERENCES FruitData(fruitname)

@@ -68,21 +68,21 @@ const TransactionRecord = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      userid: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-      },
       fruitname: {
         type: DataTypes.STRING(20),
         allowNull: false,
       },
       amount: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true,
+        type: DataTypes.DECIMAL(3),
+        allowNull: false,
+      },
+      price: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
       },
       DateofTsc: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
@@ -101,7 +101,6 @@ module.exports = (sequelize, DataTypes) => {
   const TransactionRecordModel = TransactionRecord(sequelize, DataTypes);
 
   // Define associations
-  TransactionRecordModel.belongsTo(UserModel, { foreignKey: "userid" });
   TransactionRecordModel.belongsTo(FruitDataModel, { foreignKey: "fruitname" });
 
   return {
@@ -148,4 +147,22 @@ const initializeData = async (sequelize) => {
     { fruitname: "Mango", initialprice: 6.0, currentprice: 6.0, RISK: "high" },
   ]);
 };
+
+// Sync and Initialize Database
+const syncDatabase = async (sequelize) => {
+  try {
+    // Sync all models with { force: true } to drop and recreate tables
+    await sequelize.sync({ force: true });
+    console.log("Database synced successfully.");
+
+    // Initialize data after syncing
+    await initializeData(sequelize);
+    console.log("Initial data inserted successfully.");
+  } catch (error) {
+    console.error("Error syncing database:", error);
+  }
+};
+
+
 module.exports.initializeData = initializeData;
+module.exports.syncDatabase = syncDatabase;

@@ -44,7 +44,7 @@ router.post("/fruitdata", async (req, res) => {
 router.get("/transaction", async (req, res) => {
   try {
     const transactionRecord = await db.TransactionRecord.findAll({
-      attributes: ["fruitname", "amount", "DateofTsc"],
+      attributes: ["fruitname", "amount", "price" ,"DateofTsc"],
     });
     res.status(200).json(transactionRecord);
   } catch (error) {
@@ -55,15 +55,12 @@ router.get("/transaction", async (req, res) => {
 // Post new transaction record
 router.post("/transaction", async (req, res) => {
   try {
-    const { userid, fruitname, amount, DateofTsc } = req.body;
-    const newTransaction = await db.TransactionRecord.create({
-      userid,
-      fruitname,
-      amount,
-      DateofTsc,
-    });
-    res.status(201).json(newTransaction);
+    const transactions = req.body;
+    const createdRecords = await db.TransactionRecord.bulkCreate(transactions);
+    res.status(201).json(createdRecords);
   } catch (error) {
+    console.log(error);
+    console.log(req.body);
     res.status(400).json({ error: "Failed to create new transaction record" });
   }
 });

@@ -6,7 +6,7 @@ app.use(express.json());
 app.use(cors());
 
 const db = require("./models");
-const { initializeData } = require("./models/data"); // initialize
+const { initializeData,syncDatabase } = require("./models/data"); // initialize
 
 // Routers
 const postRouter = require("./routes/Posts");
@@ -16,6 +16,7 @@ db.sequelize.sync().then(async () => {
   try {
     // Initialize FruitData table with data
     await initializeData(db.sequelize);
+    await syncDatabase(db.sequelize);
     console.log("Database initialized");
 
     // Start the server

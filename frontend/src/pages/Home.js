@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [counts, setCounts] = useState({});
+  const [dateofTsc, setdateofTsc] = useState(0);
 
   const fruitImages = {
     apple: "/assets/images/apple.svg",
@@ -45,12 +46,12 @@ function Home() {
     }));
   };
 
-    // Filter fruits with count > 0 and include their currentprice
+  // Filter fruits with count > 0 and include their currentprice
   const selectedFruits = Object.entries(counts)
     .filter(([_, count]) => count > 0)
     .map(([fruitname, count]) => {
       const fruitData = listOfPosts.find(
-        (post) => post.fruitname.toLowerCase() === fruitname.toLowerCase()
+        (fruit) => fruit.fruitname.toLowerCase() === fruitname.toLowerCase()
       );
       return {
         fruitname,
@@ -58,6 +59,42 @@ function Home() {
         amount: fruitData ? (count * fruitData.currentprice).toFixed(2) : 0,
       };
     });
+
+  const totalAmount = selectedFruits
+    .reduce((sum, fruit) => sum + parseFloat(fruit.amount), 0)
+    .toFixed(2);
+
+// make purchase and post enw transaction record
+  const handlePurchase = async ()=>{
+    if (selectedFruits.length === 0) {
+    alert("No fruits selected!");
+    return;
+  }
+
+  const transactions = selectedFruits.map(({ fruitname, count, amount }) => ({
+    fruitname,
+    amount: count,
+    price: parseFloat(amount) / count, 
+    DateofTsc: dateofTsc,
+  }));
+
+  try {
+    // Send all fruits in one request
+    await axios.post("http://localhost:3001/posts/transaction", transactions);
+    alert("Purchase successful!");
+    setCounts({}); // Reset cart
+    console.log(transactions);
+  } catch (error) {
+    console.error("Purchase failed:", error);
+    alert("Purchase failed. Please try again.");
+  }
+  };
+
+
+  const handleNextDay = () => {
+    setdateofTsc(prevDate => prevDate > 30 ? 0 : prevDate + 1);
+    alert("Next Day");
+  };
 
   return (
     <div className="Home">
@@ -75,7 +112,9 @@ function Home() {
                 className="fruit-image"
               />
               <Card.Body className="fruit-card-body">
-                <Card.Title className="fruit-title">{value.fruitname}</Card.Title>
+                <Card.Title className="fruit-title">
+                  {value.fruitname}
+                </Card.Title>
                 <Card.Text className="fruit-details">
                   <ul>
                     <li>${value.initialprice}</li>
@@ -83,44 +122,49 @@ function Home() {
                     <li>Risk: {value.RISK}</li>
                   </ul>
                 </Card.Text>
-                <div className="counter-container">  
-                <Button
-                  variant="primary"
-                  className="addorMinusbtn"
-                  onClick={() => handleAdd(value.fruitname)}
-                >
-                  +
-                </Button>
-                <span className="counter-display">
-                  {counts[value.fruitname] || 0}
-                </span>
-                <Button
-                  variant="primary"
-                  className="addorMinusbtn"
-                  onClick={() => handleMinus(value.fruitname)}
-                >
-                  -
-                </Button>
+                <div className="counter-container">
+                  <Button
+                    variant="primary"
+                    className="addorMinusbtn"
+                    onClick={() => handleAdd(value.fruitname)}
+                  >
+                    +
+                  </Button>
+                  <span className="counter-display">
+                    {counts[value.fruitname] || 0}
+                  </span>
+                  <Button
+                    variant="primary"
+                    className="addorMinusbtn"
+                    onClick={() => handleMinus(value.fruitname)}
+                  >
+                    -
+                  </Button>
                 </div>
               </Card.Body>
             </Card>
           );
         })}
-        </div>  
-        <div className="selected-fruits">
-          <h2 className="selected-fruits-title">Selected Fruits</h2>
-          {selectedFruits.length > 0 ? (
-            <ul className="selected-fruits-list">
-              {selectedFruits.map(({ fruitname, count, amount }) => (
-                <li key={fruitname} className="selected-fruit-item">
-                  {fruitname}: {count} (Total: ${amount})
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="no-selection">No fruits selected.</p>
-          )}
-        
+      </div>
+      <div className="selected-fruits">
+        <h2>Day:{dateofTsc}</h2>
+        <h2 className="selected-fruits-title"> Selected Fruits</h2>
+        {selectedFruits.length > 0 ? (
+          <ul className="selected-fruits-list">
+            {selectedFruits.map(({ fruitname, count, amount }) => (
+              <li key={fruitname} className="selected-fruit-item">
+                {fruitname}: {count} (Total: ${amount})
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="no-selection">No fruits selected.</p> // no fruit
+        )}
+        <h3>Total:{totalAmount}</h3>
+        <Button variant="primary" onClick={handlePurchase}>Purchase</Button>
+        <div className="nextDaybtn">
+        <Button variant="warning" onClick={handleNextDay}>Next Day</Button>
+        </div>
       </div>
     </div>
   );
