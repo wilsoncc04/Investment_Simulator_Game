@@ -27,7 +27,6 @@ const FruitData = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-
   return FruitData;
 };
 
@@ -55,7 +54,6 @@ const User = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-
   return User;
 };
 
@@ -90,71 +88,107 @@ const TransactionRecord = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-
   return TransactionRecord;
 };
 
-// Associations
+const Warehouse = (sequelize, DataTypes) => {
+  const Warehouse = sequelize.define(
+    "Warehouse",
+    {
+      fruitname: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        primaryKey: true, // Composite key with fruitname
+      },
+      amount: {
+        type: DataTypes.DECIMAL(3, 0), // Adjusted to match SQL DECIMAL(3)
+        allowNull: true,
+      },
+    },
+    {
+      tableName: "warehouse",
+      timestamps: false,
+    }
+  );
+  return Warehouse;
+};
+
+// Associations and Initialization
 module.exports = (sequelize, DataTypes) => {
   const FruitDataModel = FruitData(sequelize, DataTypes);
   const UserModel = User(sequelize, DataTypes);
   const TransactionRecordModel = TransactionRecord(sequelize, DataTypes);
+  const WarehouseModel = Warehouse(sequelize, DataTypes);
 
   // Define associations
   TransactionRecordModel.belongsTo(FruitDataModel, { foreignKey: "fruitname" });
+  WarehouseModel.belongsTo(FruitDataModel, { foreignKey: "fruitname" });
 
   return {
     FruitData: FruitDataModel,
     User: UserModel,
     TransactionRecord: TransactionRecordModel,
+    Warehouse: WarehouseModel,
   };
 };
 
 // Data initialization
 const initializeData = async (sequelize) => {
-  const { FruitData ,TransactionRecord} = sequelize.models;
-  await TransactionRecord.destroy({ where: {} });
-  await FruitData.destroy({ where: {} });
-  await FruitData.bulkCreate([
-    { fruitname: "Apple", initialprice: 5.0, currentprice: 5.0, RISK: "low" },
-    { fruitname: "Banana", initialprice: 4.0, currentprice: 4.0, RISK: "low" },
-    { fruitname: "Orange", initialprice: 6.0, currentprice: 6.0, RISK: "low" },
+  const { FruitData, Warehouse, TransactionRecord } = sequelize.models;
+
+  const fruitData = [
+    { fruitname: "apple", initialprice: 5.0, currentprice: 5.0, RISK: "low" },
+    { fruitname: "banana", initialprice: 4.0, currentprice: 4.0, RISK: "low" },
+    { fruitname: "orange", initialprice: 6.0, currentprice: 6.0, RISK: "low" },
     {
-      fruitname: "Grape",
+      fruitname: "grape",
       initialprice: 10.0,
       currentprice: 10.0,
       RISK: "medium",
     },
     {
-      fruitname: "Watermelon",
+      fruitname: "watermelon",
       initialprice: 30.0,
       currentprice: 30.0,
       RISK: "medium",
     },
     {
-      fruitname: "Strawberry",
+      fruitname: "strawberry",
       initialprice: 2.0,
       currentprice: 2.0,
       RISK: "medium",
     },
     {
-      fruitname: "Blueberry",
+      fruitname: "blueberry",
       initialprice: 15.0,
       currentprice: 15.0,
       RISK: "high",
     },
-    { fruitname: "Kiwi", initialprice: 8.0, currentprice: 8.0, RISK: "high" },
-    { fruitname: "Mango", initialprice: 6.0, currentprice: 6.0, RISK: "high" },
-  ]);
+    { fruitname: "kiwi", initialprice: 8.0, currentprice: 8.0, RISK: "high" },
+    { fruitname: "mango", initialprice: 6.0, currentprice: 6.0, RISK: "high" },
+  ];
+
+  const warehouseData = fruitData.map(({ fruitname }) => ({
+    fruitname,
+    amount: 0,
+  }));
+
+  // Use transaction for atomicity
+  await sequelize.transaction(async (t) => {
+    await TransactionRecord.destroy({ where: {}, transaction: t });
+    await Warehouse.destroy({ where: {}, transaction: t });
+    await FruitData.destroy({ where: {}, transaction: t });
+
+    await FruitData.bulkCreate(fruitData, { transaction: t });
+    await Warehouse.bulkCreate(warehouseData, { transaction: t });
+  });
 };
 
-// Sync and Initialize Database
 const syncDatabase = async (sequelize) => {
   try {
     // Sync all models with { force: true } to drop and recreate tables
     await sequelize.sync({ force: true });
     console.log("Database synced successfully.");
-
     // Initialize data after syncing
     await initializeData(sequelize);
     console.log("Initial data inserted successfully.");
@@ -162,7 +196,6 @@ const syncDatabase = async (sequelize) => {
     console.error("Error syncing database:", error);
   }
 };
-
 
 module.exports.initializeData = initializeData;
 module.exports.syncDatabase = syncDatabase;

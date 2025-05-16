@@ -15,10 +15,14 @@ CREATE TABLE transactionRecord (
     amount DECIMAL(3),
     price DECIMAL(5, 2) NOT NULL,
     DateofTsc INT,
-    FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (fruitname) REFERENCES FruitData(fruitname)
 
 );
+
+CREATE TABLE warehouse (
+    fruitname VARCHAR(20) NOT NULL,
+    amount DECIMAL(3)
+)
 
 
 INSERT INTO FruitData 
@@ -34,3 +38,14 @@ VALUES
 ('mango', 6.00, 6.00, 'high');
 
 
+INSERT INTO warehouse 
+VALUES 
+('apple', 0),
+('banana',0),
+('orange',0),
+('grape', 0),
+('watermelon', 0),
+('strawberry', 0),
+('blueberry', 0),
+('kiwi', 0),
+('mango', 0);

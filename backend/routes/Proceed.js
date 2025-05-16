@@ -2,13 +2,17 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 
-let newDate = 1;
+let newDate = 0;
 
 async function updatePrice() {
   try {
     const fruitdata = await db.FruitData.findAll();
     for (let fruit of fruitdata) {
-      fruit.currentprice = randomUpdatePrice(fruit.initialprice, fruit.currentprice, fruit.RISK);
+      fruit.currentprice = randomUpdatePrice(
+        fruit.initialprice,
+        fruit.currentprice,
+        fruit.RISK
+      );
       await fruit.save();
     }
     return fruitdata;
@@ -24,39 +28,50 @@ function randomUpdatePrice(initialprice, currentprice, risk) {
   if (risk === "low") {
     // -5% to +5%
     currentprice =
-      currentprice + currentprice * getRandom(-0.05, 0.05);
+      currentprice +
+      currentprice * getRandom(-0.05, 0.05, initialprice, currentprice, 1000);
   } else if (risk === "medium") {
     // -10% to +10%
     currentprice =
-      currentprice + currentprice * getRandom(-0.1, 0.1);
+      currentprice +
+      currentprice * getRandom(-0.1, 0.1, initialprice, currentprice, 330);
   } else if (risk === "high") {
     //-20% to +20%
     currentprice =
-      currentprice + currentprice * getRandom(-0.2, 0.2);
-  } else {
-    throw new Error(`Invalid risk level: ${risk}`);
+      currentprice +
+      currentprice * getRandom(-0.2, 0.2, initialprice, currentprice, 90);
   }
-  if (currentprice <= initialprice * 0.5){
-      // too low from initial price
-      currentprice = currentprice + currentprice * getRandom(0, 0.1);
-  }
-  else if (currentprice >= initialprice * 2){
+  if (currentprice <= initialprice * 0.5) {
+    // too low from initial price
+    currentprice = currentprice + currentprice * getRandom(0, 0.1);
+  } else if (currentprice >= initialprice * 2) {
     // too high from initial price
-    currentprice = (currentprice + currentprice * getRandom(-0.1, 0)).toFixed(2);
+    currentprice = (currentprice + currentprice * getRandom(-0.1, 0)).toFixed(
+      2
+    );
   }
   return parseFloat(currentprice.toFixed(2));
 }
 
-function getRandom(min, max) {
+function getRandom(min, max, initialprice, currentprice, offset) {
+  max =
+    max +
+    (initialprice - currentprice > 0
+      ? (initialprice - currentprice) / offset
+      : 0); // optimized by testing average
   return Math.random() * (max - min) + min;
 }
 
 router.post("/", async (req, res) => {
   try {
     const fruitdata = await updatePrice();
-    newDate++;
+    newDate = newDate >= 30 ? 0 : newDate + 1;
     res.status(200).json({ fruitdata, updateCount: newDate });
   } catch (error) {
-    res.status(400).json({ error: "Failed to update FruitData: " + error.message });
+    res
+      .status(400)
+      .json({ error: "Failed to update FruitData: " + error.message });
   }
 });
+
+module.exports = router;

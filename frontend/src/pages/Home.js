@@ -78,9 +78,11 @@ function Home() {
     DateofTsc: dateofTsc,
   }));
 
+
   try {
     // Send all fruits in one request
     await axios.post("http://localhost:3001/posts/transaction", transactions);
+    await axios.post("http://localhost:3001/posts/warehouse", transactions );
     alert("Purchase successful!");
     setCounts({}); // Reset cart
     console.log(transactions);

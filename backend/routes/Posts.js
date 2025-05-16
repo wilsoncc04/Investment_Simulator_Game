@@ -13,30 +13,37 @@ router.get("/fruitdata", async (req, res) => {
   }
 });
 
-
-// Update current price
-router.post("/fruitdata", async (req, res) => {
+//get warehouse data
+router.get("/warehouse", async (req, res) => {
   try {
-    const { fruitname, currentprice } = req.body;
-    // Validate input
-    if (!fruitname || currentprice === undefined) {
-      return res.status(400).json({ error: "fruitname and currentprice are required" });
-    }
-    // Update currentprice
-    const [updatedCount, updatedFruits] = await db.FruitData.update(
-      { currentprice },
-      {
-        where: { fruitname },
-        returning: true, // Return the updated record (MySQL/PostgreSQL)
-      }
-    );
-    // Check if the fruit was found and updated
-    if (updatedCount === 0) {
-      return res.status(404).json({ error: "Fruit not found" });
-    }
-    res.status(200).json(updatedFruits[0]); // Return the updated fruit
+    const warehouse = await db.Warehouse.findAll();
+    res.status(200).json(warehouse);
   } catch (error) {
-    res.status(400).json({ error: "Failed to update fruit price" });
+    console.log(error);
+    res.status(500).json({ error: "Failed to get warehouse data" });
+  }
+});
+
+
+// Update warehouse (purchase or selling)
+router.post("/warehouse", async (req, res) => {
+  try {
+    const changes = req.body;
+    for (const record of changes) {
+      const fruit = await db.Warehouse.findOne({
+        where: { fruitname: record.fruitname },
+      });
+      if (fruit) {
+        await db.Warehouse.update(
+          { amount: parseInt(fruit.amount) + parseInt(record.amount) },
+          { where: { fruitname: record.fruitname } }
+        );
+      }
+    }
+    res.status(200).json({ message: "Warehouse updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: "Failed to update warehouse" });
   }
 });
 
@@ -44,7 +51,7 @@ router.post("/fruitdata", async (req, res) => {
 router.get("/transaction", async (req, res) => {
   try {
     const transactionRecord = await db.TransactionRecord.findAll({
-      attributes: ["fruitname", "amount", "price" ,"DateofTsc"],
+      attributes: ["fruitname", "amount", "price", "DateofTsc"],
     });
     res.status(200).json(transactionRecord);
   } catch (error) {
@@ -66,8 +73,8 @@ router.post("/transaction", async (req, res) => {
 });
 
 //not finished - get fruit price trend
-router.get("/fruitrecord/:fruitname", async (req,res)=>{
-  const FruitPriceRecord = await db; 
-}) 
+router.get("/fruitrecord/:fruitname", async (req, res) => {
+  const FruitPriceRecord = await db;
+});
 
 module.exports = router;
