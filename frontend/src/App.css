@@ -14,7 +14,6 @@
   width: 95%;
   max-width: 100%;
   flex-direction: row; /* Ensures side-by-side layout */
-  justify-content: space-between; /* Pushes content to the sides */
   align-items: flex-start; /* Aligns items to the top */
 }
 
@@ -73,10 +72,12 @@
 
 /* Selected fruits container */
 .selected-fruits {
-  width: 20%; /* Take up right side of the container */
+  width: 20%;
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  padding: 1rem;
+  border: 10  px solid #e2e8f0;
+  margin-left:20px;
+  padding:1rem;
+  border-radius: 5%;
 }
 
 /* Selected fruits title */

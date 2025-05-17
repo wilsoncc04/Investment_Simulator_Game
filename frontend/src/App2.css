@@ -1,2 +1,35 @@
 /* Warehouse */
+/* warehouse container for 3x3 grid */
+.fruit-container{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 80%; /* Take up left side of the container */
+  box-sizing: border-box;
+}
 
+.warehouse-container {
+  display:flex;
+  width: 100%;
+  max-width: 100%;
+  flex-direction: row; /* Ensures side-by-side layout */
+  align-items: flex-start; /* Aligns items to the top */
+}
+
+.sell-all-btn{
+  height: 100px;
+  margin-left: 20px;
+  margin-top: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.sell-all-btn:hover {
+  box-shadow: 0 6px 10px -2px rgb(60, 255, 0);
+}
+
+.sell-container{
+  background-color:white;
+  
+  width:15%;
+  margin-left:20px;
+  height:200px;
+}

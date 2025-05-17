@@ -24,7 +24,6 @@ router.get("/warehouse", async (req, res) => {
   }
 });
 
-
 // Update warehouse (purchase or selling)
 router.post("/warehouse", async (req, res) => {
   try {
@@ -51,7 +50,8 @@ router.post("/warehouse", async (req, res) => {
 router.get("/transaction", async (req, res) => {
   try {
     const transactionRecord = await db.TransactionRecord.findAll({
-      attributes: ["fruitname", "amount", "price", "DateofTsc"],
+      order: [["id", "DESC"]],
+      attributes: ["id","fruitname", "amount", "price", "DateofTsc"],
     });
     res.status(200).json(transactionRecord);
   } catch (error) {

@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [counts, setCounts] = useState({});
-  const [dateofTsc, setdateofTsc] = useState(0);
+  const [dateofTsc, setdateofTsc] = useState(1);
 
   const fruitImages = {
     apple: "/assets/images/apple.svg",
@@ -94,7 +94,7 @@ function Home() {
 
 
   const handleNextDay = () => {
-    setdateofTsc(prevDate => prevDate > 30 ? 0 : prevDate + 1);
+    setdateofTsc(prevDate => prevDate > 30 ? 1 : prevDate + 1);
     alert("Next Day");
   };
 
