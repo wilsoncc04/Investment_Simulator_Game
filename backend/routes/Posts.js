@@ -42,7 +42,7 @@ router.post("/warehouse", async (req, res) => {
     res.status(200).json({ message: "Warehouse updated successfully" });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Failed to update warehouse" });
+    res.status(400).json("Failed to update warehouse");
   }
 });
 

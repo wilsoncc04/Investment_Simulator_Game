@@ -34,7 +34,7 @@ const User = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
-      userid: {
+      username: {
         type: DataTypes.STRING(20),
         allowNull: false,
         primaryKey: true,
@@ -45,8 +45,8 @@ const User = (sequelize, DataTypes) => {
         defaultValue: 5000,
       },
       pw: {
-        type: DataTypes.CHAR(64),
-        allowNull: true,
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {
