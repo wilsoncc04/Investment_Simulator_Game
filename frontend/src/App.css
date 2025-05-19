@@ -223,3 +223,10 @@
   padding-top:1rem;
   
 }
+
+.money-container{
+  color:gold;
+  background-color: rgb(208, 0, 255);
+  border-radius: 5%;
+  padding:10px;
+}

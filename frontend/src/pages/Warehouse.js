@@ -5,7 +5,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
 //sell fruit in warehouse
-function Warehouse() {
+function Warehouse({Money, setMoney}) {
   const fruitImages = {
     apple: "/assets/images/apple.svg",
     banana: "/assets/images/banana.svg",
@@ -22,7 +22,6 @@ function Warehouse() {
   const [soldItems, setSoldItems] = useState([]); // Store sold items for POST
   const [amounts, setAmounts] = useState({}); // Track amount to sell for each fruit
   const [totalPrice, setTotalPrice] = useState(0); // State to store the total price
-
 
   // get the amount of each fruit in the warehouse
   //get fruit name, price (too calculate the money to sold)
@@ -55,7 +54,7 @@ function Warehouse() {
     setAmounts(initialAmounts);
   }, [listOfFruit]);
 
-    // Calculate total price whenever amounts or listOfFruit changes
+  // Calculate total price whenever amounts or listOfFruit changes
   useEffect(() => {
     let calculatedTotal = 0;
     // Iterate through the amounts state
@@ -63,9 +62,7 @@ function Warehouse() {
       const amountToSell = amounts[fruitname] || 0;
       if (amountToSell > 0) {
         // Find the corresponding fruit data to get the price
-        const fruitData = listOfFruit.find(
-          (f) => f.fruitname === fruitname
-        );
+        const fruitData = listOfFruit.find((f) => f.fruitname === fruitname);
         if (fruitData && fruitData.currentprice) {
           const price = parseFloat(fruitData.currentprice);
           calculatedTotal += amountToSell * price;
@@ -119,7 +116,6 @@ function Warehouse() {
           fruitname: item.fruitname,
           amount: amountToSell,
           pricePerItem: price,
-          totalPrice: amountToSell * price,
         });
         return { ...item, amount: Number(item.amount) - amountToSell };
       }
@@ -141,25 +137,26 @@ function Warehouse() {
       resetAmounts[fruitname] = 0;
     });
     setAmounts(resetAmounts);
+    setMoney(Money + totalPrice);
 
-    console.log(
-      "Items processed for selling (client-side):",
-      itemsToSell
-    );
-    alert(
-      `Processed sales for ${itemsToSell.length} fruit.`
-    );
+    console.log("Items processed for selling (client-side):", itemsToSell);
+    alert(`Processed sales for ${itemsToSell.length} fruit.`);
     // TODO: Implement POST request to backend API when ready
     if (itemsToSell.length > 0) {
       try {
-        itemsToSell.forEach((item)=>{
+        itemsToSell.forEach((item) => {
           item.amount = -item.amount; // set to negative for backend calculation
-        })
-        const response = await axios.post("http://localhost:3001/posts/warehouse", itemsToSell);
+        });
+        const response = await axios.post(
+          "http://localhost:3001/posts/warehouse",
+          itemsToSell
+        );
         console.log("Items sold successfully on backend:", response.data);
       } catch (error) {
         console.error("Error selling items on backend:", error);
-        alert("Error occurred while trying to sync with server. Client-side stock updated.");
+        alert(
+          "Error occurred while trying to sync with server. Client-side stock updated."
+        );
       }
     }
   };
@@ -224,18 +221,18 @@ function Warehouse() {
           );
         })}
       </div>
-        <div className="sell-container">
-          <Button
-            variant="success"
-            className="sell-all-btn"
-            onClick={handleSellAll}
-          >
-            Sell Selected Fruits
-          </Button>
-          <div className="totalamount">
-            <h2>Total:${totalPrice.toFixed(2)}</h2>
-          </div>
+      <div className="sell-container">
+        <Button
+          variant="success"
+          className="sell-all-btn"
+          onClick={handleSellAll}
+        >
+          Sell Selected Fruits
+        </Button>
+        <div className="totalamount">
+          <h2>Total:${totalPrice.toFixed(2)}</h2>
         </div>
+      </div>
     </div>
   );
 }

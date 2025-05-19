@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 
-let newDate = 0;
+let newDate = 1;
 
 async function updatePrice() {
   try {
@@ -65,8 +65,8 @@ function getRandom(min, max, initialprice, currentprice, offset) {
 router.post("/", async (req, res) => {
   try {
     const fruitdata = await updatePrice();
-    newDate = newDate >= 30 ? 0 : newDate + 1;
-    res.status(200).json({ fruitdata, updateCount: newDate });
+    newDate = newDate >= 30 ? 1 : newDate + 1;
+    res.status(200).json({ fruitdata, updatedDate: newDate });
   } catch (error) {
     res
       .status(400)

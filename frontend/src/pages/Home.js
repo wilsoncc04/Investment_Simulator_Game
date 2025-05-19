@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-function Home() {
-  const [listOfPosts, setListOfPosts] = useState([]);
+function Home({ dateofTsc, handleNextDay, currentFruitData, Money, setMoney }) {
   const [counts, setCounts] = useState({});
-  const [dateofTsc, setdateofTsc] = useState(1);
 
   const fruitImages = {
     apple: "/assets/images/apple.svg",
@@ -20,17 +18,6 @@ function Home() {
     kiwi: "/assets/images/kiwi.svg",
     mango: "/assets/images/mango.svg",
   };
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/posts/fruitdata")
-      .then((response) => {
-        setListOfPosts(response.data);
-      })
-      .catch((response) => {
-        console.log("error , no data");
-      });
-  }, []);
 
   const handleAdd = (fruitname) => {
     setCounts((prevCounts) => ({
@@ -50,7 +37,7 @@ function Home() {
   const selectedFruits = Object.entries(counts)
     .filter(([_, count]) => count > 0)
     .map(([fruitname, count]) => {
-      const fruitData = listOfPosts.find(
+      const fruitData = currentFruitData.find(
         (fruit) => fruit.fruitname.toLowerCase() === fruitname.toLowerCase()
       );
       return {
@@ -64,44 +51,37 @@ function Home() {
     .reduce((sum, fruit) => sum + parseFloat(fruit.amount), 0)
     .toFixed(2);
 
-// make purchase and post enw transaction record
-  const handlePurchase = async ()=>{
+  // make purchase and post enw transaction record
+  const handlePurchase = async () => {
     if (selectedFruits.length === 0) {
-    alert("No fruits selected!");
-    return;
-  }
+      alert("No fruits selected!");
+      return;
+    }
 
-  const transactions = selectedFruits.map(({ fruitname, count, amount }) => ({
-    fruitname,
-    amount: count,
-    price: parseFloat(amount) / count, 
-    DateofTsc: dateofTsc,
-  }));
-
-
-  try {
-    // Send all fruits in one request
-    await axios.post("http://localhost:3001/posts/transaction", transactions);
-    await axios.post("http://localhost:3001/posts/warehouse", transactions );
-    alert("Purchase successful!");
-    setCounts({}); // Reset cart
-    console.log(transactions);
-  } catch (error) {
-    console.error("Purchase failed:", error);
-    alert("Purchase failed. Please try again.");
-  }
-  };
-
-
-  const handleNextDay = () => {
-    setdateofTsc(prevDate => prevDate > 30 ? 1 : prevDate + 1);
-    alert("Next Day");
+    const transactions = selectedFruits.map(({ fruitname, count, amount }) => ({
+      fruitname,
+      amount: count,
+      price: parseFloat(amount) / count,
+      DateofTsc: dateofTsc,
+    }));
+    try {
+      // Send all fruits in one request
+      await axios.post("http://localhost:3001/posts/transaction", transactions);
+      await axios.post("http://localhost:3001/posts/warehouse", transactions);
+      setMoney(Money - parseFloat(totalAmount));
+      alert("Purchase successful!");
+      setCounts({}); // Reset cart
+      console.log(transactions);
+    } catch (error) {
+      console.error("Purchase failed:", error);
+      alert("Purchase failed. Please try again.");
+    }
   };
 
   return (
     <div className="Home">
       <div className="fruit-container">
-        {listOfPosts.map((value, key) => {
+        {currentFruitData.map((value, key) => {
           return (
             <Card className="fruit-card" key={key}>
               <Card.Img
@@ -163,9 +143,13 @@ function Home() {
           <p className="no-selection">No fruits selected.</p> // no fruit
         )}
         <h3>Total:{totalAmount}</h3>
-        <Button variant="primary" onClick={handlePurchase}>Purchase</Button>
+        <Button variant="primary" onClick={handlePurchase}>
+          Purchase
+        </Button>
         <div className="nextDaybtn">
-        <Button variant="warning" onClick={handleNextDay}>Next Day</Button>
+          <Button variant="warning" onClick={handleNextDay}>
+            Next Day
+          </Button>
         </div>
       </div>
     </div>
