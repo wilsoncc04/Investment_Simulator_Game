@@ -3,9 +3,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
 
 function Home({ dateofTsc, handleNextDay, currentFruitData, Money, setMoney }) {
   const [counts, setCounts] = useState({});
+  let navigate = useNavigate();
 
   const fruitImages = {
     apple: "/assets/images/apple.svg",
@@ -90,6 +92,7 @@ function Home({ dateofTsc, handleNextDay, currentFruitData, Money, setMoney }) {
                   fruitImages[value.fruitname.toLowerCase()] ||
                   "/assets/images/default.svg"
                 }
+                onClick={() => navigate(`/fruit/${value.fruitname}`)}
                 alt={value.fruitname}
                 className="fruit-image"
               />

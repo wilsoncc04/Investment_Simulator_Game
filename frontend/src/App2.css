@@ -33,3 +33,16 @@
   margin-left:20px;
   height:200px;
 }
+
+/*trend*/
+.trend {
+  padding: 20px;
+}
+
+.chart {
+  width: 80vw; /* 90% of viewport width */
+  max-width: 1000px; /* Larger max width */
+  height: 500px; /* Larger height */
+  margin: 0 auto;
+  background-color: aquamarine;
+}

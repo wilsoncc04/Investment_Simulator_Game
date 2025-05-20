@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 const bcrypt = require("bcrypt");
+const {sign} = require("jsonwebtoken");
 
 router.post("/", async (req, res) => {
   //register
@@ -41,7 +42,8 @@ router.post("/login", async (req, res) => {
           if (!match) {
             return res.json({ error: "wrong username or password" });
           }
-          return res.json("logged in!");
+          const accessToken = sign({username: user.username, id:user.id}, "testtest");
+          return res.json(accessToken);
         })
         .catch((error) => {
           console.error("Bcrypt compare error:", err);

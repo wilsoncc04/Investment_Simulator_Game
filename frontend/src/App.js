@@ -7,18 +7,29 @@ import Home from "./pages/Home";
 import TRecord from "./pages/TransactionRecord";
 import Login from "./pages/login";
 import Warehouse from "./pages/Warehouse";
+import Trend from "./pages/trend";
 import axios from "axios";
 
 function App() {
   const [dateofTsc, setdateofTsc] = useState(1);
   const [currentFruitData, setcurrentFruitData] = useState([]);
   const [Money, setMoney] = useState(5000);
+  const [priceHistory, setPriceHistory] = useState({});
+
   //fetch initial fruitdata
   useEffect(() => {
     axios
       .get("http://localhost:3001/posts/fruitdata")
       .then((response) => {
         setcurrentFruitData(response.data);
+        //set all initial price of priceHistory
+        const newPriceHistory = {};
+        response.data.forEach((fruit) => {
+          if (fruit.fruitname) {
+            newPriceHistory[fruit.fruitname] = [fruit.currentprice];
+          }
+        });
+        setPriceHistory(newPriceHistory);
       })
       .catch((error) => {
         console.log("error , no data");
@@ -30,8 +41,22 @@ function App() {
       const response = await axios.post("http://localhost:3001/proceed");
       setdateofTsc(response.data.updatedDate);
       setcurrentFruitData(response.data.fruitdata);
-      /*To do: log the price and store in an array of array, represent it as graph in the future*/
+
+      /*log the price in priceHistory, store as array, represent it as graph in the future*/
+      setPriceHistory((prevHistory) => {
+        const updatedHistory = { ...prevHistory };
+        response.data.fruitdata.forEach((fruit) => {
+          if (fruit.fruitname && updatedHistory[fruit.fruitname]) {
+            updatedHistory[fruit.fruitname] = [
+              ...updatedHistory[fruit.fruitname],
+              fruit.currentprice,
+            ];
+          }
+        });
+        return updatedHistory;
+      });
       alert("Next Day");
+      console.log(priceHistory);
     } catch (error) {
       console.error("Error proceeding to next day:", error);
       alert("Failed to proceed to next day. See console for details.");
@@ -45,7 +70,7 @@ function App() {
           <Link to="/"> Home Page</Link>
           <Link to="/transactionrecord">Transaction Record</Link>
           <Link to="/Warehouse">Warehouse</Link>
-          <h3 className="money-container">$:{Money}</h3>
+          <div className="money-container">$:{Money}</div>
           <Link to="/login">Login</Link>
         </div>
         <Routes>
@@ -66,6 +91,10 @@ function App() {
           <Route
             path="/warehouse"
             element={<Warehouse Money={Money} setMoney={setMoney} />}
+          />
+          <Route
+            path="/fruit/:fruitname"
+            element={<Trend priceHistory={priceHistory} />}
           />
         </Routes>
       </Router>

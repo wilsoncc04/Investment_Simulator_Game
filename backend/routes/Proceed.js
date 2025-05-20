@@ -41,10 +41,10 @@ function randomUpdatePrice(initialprice, currentprice, risk) {
       currentprice +
       currentprice * getRandom(-0.2, 0.2, initialprice, currentprice, 90);
   }
-  if (currentprice <= initialprice * 0.5) {
+  if (currentprice <= initialprice * 0.6) {
     // too low from initial price
     currentprice = currentprice + currentprice * getRandom(0, 0.1);
-  } else if (currentprice >= initialprice * 2) {
+  } else if (currentprice >= initialprice * 1.6) {
     // too high from initial price
     currentprice = (currentprice + currentprice * getRandom(-0.1, 0)).toFixed(
       2
@@ -57,7 +57,7 @@ function getRandom(min, max, initialprice, currentprice, offset) {
   max =
     max +
     (initialprice - currentprice > 0
-      ? (initialprice - currentprice) / offset
+      ? (initialprice * 1.001 - currentprice) / offset
       : 0); // optimized by testing average
   return Math.random() * (max - min) + min;
 }
@@ -65,7 +65,7 @@ function getRandom(min, max, initialprice, currentprice, offset) {
 router.post("/", async (req, res) => {
   try {
     const fruitdata = await updatePrice();
-    newDate = newDate >= 30 ? 1 : newDate + 1;
+    newDate = newDate + 1;
     res.status(200).json({ fruitdata, updatedDate: newDate });
   } catch (error) {
     res
