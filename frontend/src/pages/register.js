@@ -4,13 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-// Validation schema using Yup
 const validationSchema = Yup.object({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required"),
 });
-
-function Login({IsLoggedIn, setIsLoggedIn,setusername}) {
+function Register() {
   const navigate = useNavigate();
 
   // Initial form values
@@ -22,24 +20,23 @@ function Login({IsLoggedIn, setIsLoggedIn,setusername}) {
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
-      const response = await axios.post("http://localhost:3001/auth/login", values);
-      setusername(values.username);
-      alert("Login successful! Redirecting to home...");
-      setIsLoggedIn(true);
-      navigate("/");
+      const response = await axios.post("http://localhost:3001/auth", values);
+      if (response.data === "success") {
+        alert("Registration successful! Redirecting to login...");
+        navigate("/login");
+      }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setFieldError("password", "Invalid username or password");
+      if (error.response && error.response.status === 409) {
+        setFieldError("username", "Username already exists");
       } else {
-        alert("Failed to login. Please try again.");
+        alert("Failed to register. Please try again.");
       }
     }
-    setSubmitting(false);
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Login</h2>
+    <div className="register-container">
+      <h2 className="registerTitle">Register</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -69,7 +66,6 @@ function Login({IsLoggedIn, setIsLoggedIn,setusername}) {
                 Password
               </label>
               <Field
-                type="password"
                 name="password"
                 id="password"
                 className="form-control"
@@ -86,7 +82,7 @@ function Login({IsLoggedIn, setIsLoggedIn,setusername}) {
               className="btn btn-primary w-100"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Logging in..." : "Login"}
+              {isSubmitting ? "Registering..." : "Register"}
             </button>
           </Form>
         )}
@@ -95,4 +91,4 @@ function Login({IsLoggedIn, setIsLoggedIn,setusername}) {
   );
 }
 
-export default Login;
+export default Register;

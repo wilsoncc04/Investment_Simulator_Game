@@ -5,7 +5,7 @@ const db = require("../models"); // Import models from models/index.js
 // Get all fruit data
 router.get("/fruitdata", async (req, res) => {
   try {
-    const fruitdata = await db.FruitData.findAll();
+    const fruitdata = await db.FruitData.findAll({order: [["RISK","ASC"]]});
     res.status(200).json(fruitdata); // Use 200 for retrieval
   } catch (error) {
     console.error("Error in GET /fruitdata:", error);
@@ -72,9 +72,6 @@ router.post("/transaction", async (req, res) => {
   }
 });
 
-//not finished - get fruit price trend
-router.get("/fruitrecord/:fruitname", async (req, res) => {
-  const FruitPriceRecord = await db;
-});
+
 
 module.exports = router;

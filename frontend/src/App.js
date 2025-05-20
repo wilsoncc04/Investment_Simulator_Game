@@ -8,6 +8,7 @@ import TRecord from "./pages/TransactionRecord";
 import Login from "./pages/login";
 import Warehouse from "./pages/Warehouse";
 import Trend from "./pages/trend";
+import Register from "./pages/register";
 import axios from "axios";
 
 function App() {
@@ -15,33 +16,55 @@ function App() {
   const [currentFruitData, setcurrentFruitData] = useState([]);
   const [Money, setMoney] = useState(5000);
   const [priceHistory, setPriceHistory] = useState({});
+  const [username, setusername] = useState();
+  const [IsLoggedIn, setIsLoggedIn] = useState(false);
 
-  //fetch initial fruitdata
+  // Fetch initial data (fruit data and money)
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/posts/fruitdata")
-      .then((response) => {
-        setcurrentFruitData(response.data);
-        //set all initial price of priceHistory
+    const fetchData = async () => {
+      try {
+        // Fetch fruit data
+        const fruitResponse = await axios.get(
+          "http://localhost:3001/posts/fruitdata"
+        );
+        setcurrentFruitData(fruitResponse.data);
         const newPriceHistory = {};
-        response.data.forEach((fruit) => {
+        fruitResponse.data.forEach((fruit) => {
           if (fruit.fruitname) {
-            newPriceHistory[fruit.fruitname] = [fruit.currentprice];
+            newPriceHistory[fruit.fruitname] = [fruit.currentprice || 0];
           }
         });
         setPriceHistory(newPriceHistory);
-      })
-      .catch((error) => {
-        console.log("error , no data");
-      });
-  }, []);
+
+        // Fetch initial money
+        if (username) {
+          const moneyResponse = await axios.get(
+            "http://localhost:3001/auth/money",
+            username
+          );
+          setMoney(moneyResponse.data.money || 5000);
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        if (error.response && error.response.status === 401) {
+          setIsLoggedIn(false);
+          alert("Session expired. Please log in again.");
+        }
+      }
+    };
+    fetchData();
+  }, [IsLoggedIn]);
 
   const handleNextDay = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to proceed to the next day.");
+      return;
+    }
     try {
       const response = await axios.post("http://localhost:3001/proceed");
       setdateofTsc(response.data.updatedDate);
       setcurrentFruitData(response.data.fruitdata);
-
       /*log the price in priceHistory, store as array, represent it as graph in the future*/
       setPriceHistory((prevHistory) => {
         const updatedHistory = { ...prevHistory };
@@ -55,6 +78,8 @@ function App() {
         });
         return updatedHistory;
       });
+      const currentmoney = {username:username ,money:Money};
+      const updatemoney = await axios.post("http://localhost:3001/auth/money",currentmoney);
       alert("Next Day");
       console.log(priceHistory);
     } catch (error) {
@@ -70,8 +95,12 @@ function App() {
           <Link to="/"> Home Page</Link>
           <Link to="/transactionrecord">Transaction Record</Link>
           <Link to="/Warehouse">Warehouse</Link>
-          <div className="money-container">$:{Money}</div>
-          <Link to="/login">Login</Link>
+          <div className="userid">username: {username||"anomyous"}</div>
+          <div className="money-container">$:{Money.toFixed(2)}</div>
+          <div className="user">
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </div>
         </div>
         <Routes>
           <Route
@@ -87,7 +116,13 @@ function App() {
             }
           />
           <Route path="/transactionrecord" element={<TRecord />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              <Login IsLoggedIn={IsLoggedIn} setIsLoggedIn={setIsLoggedIn} setusername={setusername} />
+            }
+          />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/warehouse"
             element={<Warehouse Money={Money} setMoney={setMoney} />}

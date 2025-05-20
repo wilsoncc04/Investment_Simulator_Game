@@ -6,7 +6,7 @@ let newDate = 1;
 
 async function updatePrice() {
   try {
-    const fruitdata = await db.FruitData.findAll();
+    const fruitdata = await db.FruitData.findAll({order: [["RISK","ASC"]]});
     for (let fruit of fruitdata) {
       fruit.currentprice = randomUpdatePrice(
         fruit.initialprice,
@@ -44,7 +44,7 @@ function randomUpdatePrice(initialprice, currentprice, risk) {
   if (currentprice <= initialprice * 0.6) {
     // too low from initial price
     currentprice = currentprice + currentprice * getRandom(0, 0.1);
-  } else if (currentprice >= initialprice * 1.6) {
+  } else if (currentprice >= initialprice * 1.7) {
     // too high from initial price
     currentprice = (currentprice + currentprice * getRandom(-0.1, 0)).toFixed(
       2

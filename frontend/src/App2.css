@@ -46,3 +46,96 @@
   margin: 0 auto;
   background-color: aquamarine;
 }
+
+/*register and login*/
+
+.register-container {
+  padding: 20px;
+  width: 60vw;
+  height:30vw;
+  margin-top: 50px; /* Override mt-5 for consistent spacing */
+  background-color: #f8f9fa; /* Light gray background for contrast */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+
+/* Form styling */
+.w-50.mx-auto {
+  max-width: 400px;
+}
+
+/* Form labels */
+.form-label {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Input fields */
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+/* Error messages */
+.text-danger {
+  font-size: 0.875rem;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Submit button */
+.btn-primary {
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Login/register link */
+.text-center.mt-3 a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.text-center.mt-3 a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .container {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .w-50.mx-auto {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .btn-primary {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}
